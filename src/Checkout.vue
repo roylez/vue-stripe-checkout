@@ -51,8 +51,7 @@ export default {
   methods: {
     redirectToCheckout () {
       try {
-        this.$emit('loading', true);
-        this.$stripe.redirectToCheckout({
+        var opts = {
           billingAddressCollection: this.billingAddressCollection,
           cancelUrl: this.cancelUrl,
           clientReferenceId: this.clientReferenceId,
@@ -62,7 +61,10 @@ export default {
           sessionId: this.sessionId,
           submitType: this.submitType,
           successUrl: this.successUrl,
-        });
+        }
+        opts.items[0].plan && delete opts.submitType
+        this.$emit('loading', true);
+        this.$stripe.redirectToCheckout(opts);
       } catch (e) {
         console.error(e);
         this.$emit('error', e);
